@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Power BI Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/powerbi-client/dist/powerbi.js"></script>
+</head>
+<body>
+  <h2>Embedded Power BI Report</h2>
+  <div id="reportContainer" style="height:800px; width:100%; border:1px solid #ccc;"></div>
+
+  <script>
+    async function loadReport() {
+      if (!window['powerbi-client']) {
+        console.error("❌ Power BI SDK not loaded!");
+        return;
+      }
+
+      try {
+        const res = await fetch("/embed-info");
+        if (!res.ok) throw new Error("Failed to fetch embed info");
+        const { embedUrl, embedToken, reportId } = await res.json();
+
+        console.log("✅ Embed info received:", { embedUrl, reportId });
+
+        const models = window['powerbi-client'].models;
+
+        const config = {
+          type: "report",
+          id: reportId,
+          embedUrl: embedUrl,
+          accessToken: embedToken,
+          tokenType: models.TokenType.Embed,
+          settings: {
+            panes: { filters: { visible: false } },
+            navContentPaneEnabled: true
+          }
+        };
+
+        const container = document.getElementById("reportContainer");
+        const report = powerbi.embed(container, config);
+
+        report.on("loaded", () => console.log("✅ Report loaded successfully"));
+        report.on("error", err => console.error("❌ Report error:", err));
+
+      } catch (err) {
+        console.error("❌ loadReport() failed:", err);
+      }
+    }
+
+    loadReport();
+  </script>
+</body>
+</html>
