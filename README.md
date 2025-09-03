@@ -342,14 +342,63 @@ http://<VM-IP>/index.html
 
 ## 6. Optional polish
 
-### Keep backend alive with pm2
+### Keep backend alive with PM2
+
+When you start your backend manually with:
+
+```bash
+node server.js
+```
+
+- The process runs in the foreground of your terminal.  
+- If you close the terminal, log out, or the process crashes, the backend stops running.  
+- That means your `/embed-info` endpoint would no longer respond, and the embedded report would fail.  
+
+To fix this, we use **PM2**, a process manager for Node.js. PM2 provides:  
+- **Daemonizing:** runs apps in the background.  
+- **Auto-restart:** restarts if the app crashes.  
+- **Startup scripts:** ensures backend starts automatically on VM reboot.  
+- **Monitoring:** easy status checks, CPU/memory usage, and log viewing.  
+
+Install globally:
 
 ```bash
 sudo npm install -g pm2
-pm2 start server.js
+```
+
+Start backend with PM2:
+
+```bash
+pm2 start server.js --name powerbi-backend
+```
+
+Check status:
+
+```bash
+pm2 status
+```
+
+View logs:
+
+```bash
+pm2 logs powerbi-backend
+```
+
+Stop or restart:
+
+```bash
+pm2 stop powerbi-backend
+pm2 restart powerbi-backend
+```
+
+Enable auto-start on reboot:
+
+```bash
 pm2 save
 pm2 startup
 ```
+
+---
 
 ### Enable HTTPS with self-signed cert
 
