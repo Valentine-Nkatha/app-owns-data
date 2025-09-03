@@ -4,7 +4,7 @@
 - Fresh Ubuntu 22.04/24.04 VM  
 - Internet access to Azure endpoints (`login.microsoftonline.com`, `api.powerbi.com`, `app.powerbi.com`)  
 - Power BI Service principal registered in Entra ID (with `Tenant.Read.All`, `Dataset.Read.All`, and `Report.Read.All` permissions)  
-- Service principal added to the target workspace with **Reshare** permissions  
+- Service principal added to the target workspace with **Reshare** permissions  (i.e. member or admin)
 
 Replace placeholders with your actual values:
 - **Tenant ID**: `<TENANT_ID>`  
