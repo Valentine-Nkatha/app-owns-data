@@ -15,7 +15,7 @@ Every command, config file, and code snippet includes detailed explanations of w
   - `Report.Read.All`  
 - The Service Principal must be added to the target Power BI workspace with **Member** access (minimum role that grants “Reshare” permissions required for embed token generation).
 
-Replace placeholders with your actual values (see step-1_obtain_values):  
+Replace placeholders with your actual values (See: [`step-1_obtain_values/README.md`](./step-1_obtain_values/README.md)):  
 - **Tenant ID**: `<TENANT_ID>`  
 - **Client ID**: `<CLIENT_ID>`  
 - **Client Secret**: `<CLIENT_SECRET>`  
