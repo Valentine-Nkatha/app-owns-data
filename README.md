@@ -340,7 +340,7 @@ http://<VM-IP>/index.html
 
 ---
 
-## 6. Optional Extra Configurations
+## 6. Optional polish
 
 ### Keep backend alive with PM2
 
@@ -397,6 +397,41 @@ Enable auto-start on reboot:
 pm2 save
 pm2 startup
 ```
+
+---
+
+### Troubleshooting: Port already in use (`EADDRINUSE`)
+
+If you see this error in the PM2 logs:
+
+```
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+```
+
+It means another process is already using port 3000. This usually happens if you ran `node server.js` manually before switching to PM2.
+
+**Fix:**
+
+1. Check what is using port 3000:
+
+```bash
+sudo lsof -i :3000
+```
+
+2. Kill the old process:
+
+```bash
+sudo kill -9 <PID>
+```
+
+3. Restart with PM2 only:
+
+```bash
+pm2 delete powerbi-backend
+pm2 start server.js --name powerbi-backend
+```
+
+✅ Now only PM2 is managing the backend, and the conflict is resolved.
 
 ---
 
