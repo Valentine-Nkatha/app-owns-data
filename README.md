@@ -6,7 +6,7 @@
 
 ---
 
-## TL;DR
+## Steps
 
 - **Step 1**: Collect everything you need — **Tenant ID, Client ID, Client Secret, Workspace ID, Report ID, Dataset ID**.  
   See: [`step-1_obtain_values/README.md`](./step-1_obtain_values/README.md) (includes a top‑to‑bottom flow diagram).
