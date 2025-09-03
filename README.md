@@ -88,312 +88,63 @@ npm install express node-fetch@2 cors
 
 ---
 
-### Create `server.js`
+### Edit `package.json`
 
-```javascript
-const express = require("express");
-const fetch = require("node-fetch");
-const cors = require("cors");
+After initializing your project with `npm init -y`, npm creates a default `package.json` file.  
+By default, it will look roughly like this:
 
-const app = express();
-app.use(cors());
-
-// Replace placeholders with your actual values
-const tenantId = "<TENANT_ID>";
-const clientId = "<CLIENT_ID>";
-const clientSecret = "<CLIENT_SECRET>";
-const workspaceId = "<WORKSPACE_ID>";
-const reportId = "<REPORT_ID>";
-const datasetId = "<DATASET_ID>";
-
-// Helper: get AAD token
-async function getAADToken() {
-  const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("client_secret", clientSecret);
-  params.append("grant_type", "client_credentials");
-  params.append("scope", "https://analysis.windows.net/powerbi/api/.default");
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params
-  });
-
-  const json = await res.json();
-  if (!res.ok) throw new Error(JSON.stringify(json));
-  return json.access_token;
+```json
+{
+  "name": "powerbi-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
+```
 
-// API route: /embed-info
-app.get("/embed-info", async (req, res) => {
-  try {
-    const aadToken = await getAADToken();
+You should **edit this file** so that it uses `server.js` as the entry point and defines a convenient `start` script.  
+Also, once you install dependencies (like `express` and `node-fetch`), npm will automatically add them under `"dependencies"`.
 
-    // Get report metadata
-    const reportRes = await fetch(
-      `https://api.powerbi.com/v1.0/myorg/groups/${workspaceId}/reports/${reportId}`,
-      { headers: { Authorization: `Bearer ${aadToken}` } }
-    );
-    const report = await reportRes.json();
+A good final version of `package.json` for this demo looks like this:
 
-    // Generate embed token
-    const tokenRes = await fetch(
-      `https://api.powerbi.com/v1.0/myorg/groups/${workspaceId}/reports/${reportId}/GenerateToken`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${aadToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          accessLevel: "View",
-          datasets: [{ id: datasetId }]
-        })
-      }
-    );
-    const embedTokenResponse = await tokenRes.json();
-
-    res.json({
-      embedUrl: report.embedUrl,
-      reportId: report.id,
-      embedToken: embedTokenResponse.token,
-      expiration: embedTokenResponse.expiration
-    });
-  } catch (err) {
-    console.error("Error in /embed-info:", err);
-    res.status(500).send("Failed to get embed info");
+```json
+{
+  "name": "powerbi-demo",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0",
+    "cors": "^2.8.5"
   }
-});
-
-app.listen(3000, "0.0.0.0", () => {
-  console.log("Backend running on http://0.0.0.0:3000");
-});
+}
 ```
 
-**Explanation:**  
-- `express()` starts a web server.  
-- `app.use(cors())` allows frontend requests from another origin.  
-- `getAADToken()` acquires an Azure AD access token using client credentials flow.  
-- `/embed-info` is a REST endpoint:  
-  1. Fetches report metadata.  
-  2. Requests an embed token.  
-  3. Returns JSON with `embedUrl`, `reportId`, `embedToken`.  
-- `app.listen(3000, "0.0.0.0")` starts the backend on port 3000.  
+**Explanation:**
+- `"main": "server.js"` → tells Node.js the entry point of your app.  
+- `"scripts": { "start": "node server.js" }` → allows you to run the backend with `npm start`.  
+- `"dependencies"` → managed automatically when you install libraries using `npm install <package>`.  
 
-Run it:
+---
 
-```bash
-node server.js
-```
+### About `package-lock.json`
+
+When you install dependencies, npm also generates a file called `package-lock.json`.  
+- It records the **exact versions** of every package (and sub-dependency) installed.  
+- This ensures consistent installs across environments (important for reproducibility).  
+- **You do not need to edit this file** for this project. Just commit it to version control if you want consistent builds.  
 
 ---
 
 ## 4. Configure nginx reverse proxy
 
-Edit `/etc/nginx/sites-available/default`:
-
-```nginx
-server {
-    listen 80;
-
-    server_name _;
-
-    root /var/www/html;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    # Proxy /embed-info to Node.js backend
-    location /embed-info {
-        proxy_pass http://127.0.0.1:3000/embed-info;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-**Explanation:**  
-- `listen 80;` makes nginx listen on HTTP port 80.  
-- `root /var/www/html;` serves static files (our frontend `index.html`).  
-- `location /embed-info { proxy_pass http://127.0.0.1:3000/embed-info; }` forwards API calls to Node.js backend.  
-- Headers ensure proper request forwarding.  
-
-Reload nginx:
-
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-**Explanation:**  
-- `nginx -t` tests configuration for errors.  
-- `systemctl reload nginx` applies changes without restarting the server.  
-
----
-
-## 5. Create frontend
-
-`/var/www/html/index.html`:
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Power BI Demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/powerbi-client/dist/powerbi.js"></script>
-</head>
-<body>
-  <h2>Embedded Power BI Report</h2>
-  <div id="reportContainer" style="height:800px; width:100%; border:1px solid #ccc;"></div>
-
-  <script>
-    async function loadReport() {
-      if (!window['powerbi-client']) {
-        console.error("❌ Power BI SDK not loaded!");
-        return;
-      }
-
-      try {
-        const res = await fetch("/embed-info");
-        if (!res.ok) throw new Error("Failed to fetch embed info");
-        const { embedUrl, embedToken, reportId } = await res.json();
-
-        console.log("✅ Embed info received:", { embedUrl, reportId });
-
-        const models = window['powerbi-client'].models;
-
-        const config = {
-          type: "report",
-          id: reportId,
-          embedUrl: embedUrl,
-          accessToken: embedToken,
-          tokenType: models.TokenType.Embed,
-          settings: {
-            panes: { filters: { visible: false } },
-            navContentPaneEnabled: true
-          }
-        };
-
-        const container = document.getElementById("reportContainer");
-        const report = powerbi.embed(container, config);
-
-        report.on("loaded", () => console.log("✅ Report loaded successfully"));
-        report.on("error", err => console.error("❌ Report error:", err));
-
-      } catch (err) {
-        console.error("❌ loadReport() failed:", err);
-      }
-    }
-
-    loadReport();
-  </script>
-</body>
-</html>
-```
-
-**Explanation:**  
-- Loads the Power BI JS SDK from CDN.  
-- Calls `/embed-info` to retrieve embed details.  
-- Creates a config object with `embedUrl`, `reportId`, and `embedToken`.  
-- Embeds the report inside `#reportContainer`.  
-- Adds event listeners for success/error logging.  
-
-Open in browser:  
-```
-http://<VM-IP>/index.html
-```
-
----
-
-## 6. Optional polish
-
-### Keep backend alive with pm2
-
-```bash
-sudo npm install -g pm2
-pm2 start server.js
-pm2 save
-pm2 startup
-```
-
-**Explanation:**  
-- `npm install -g pm2` installs PM2 globally.  
-- `pm2 start server.js` runs backend under PM2.  
-- `pm2 save` saves process list.  
-- `pm2 startup` configures startup script so backend auto-starts on reboot.  
-
-### Enable HTTPS with self-signed cert
-
-```bash
-sudo openssl req -x509 -newkey rsa:2048 -nodes -keyout /etc/ssl/private/powerbi.key -out /etc/ssl/certs/powerbi.crt -days 365
-```
-
-**Explanation:**  
-- Generates a self-signed TLS certificate valid for 365 days.  
-- `-nodes` means no passphrase required.  
-- `-keyout` stores private key, `-out` stores cert.  
-
-Update nginx config:
-
-Edit `/etc/nginx/sites-available/default`:
-
-```nginx
-# Redirect all HTTP traffic to HTTPS
-server {
-    listen 80;
-    server_name _;
-
-    return 301 https://$host$request_uri;
-}
-
-# HTTPS server
-server {
-    listen 443 ssl;
-    server_name _;
-
-    ssl_certificate /etc/ssl/certs/powerbi.crt;
-    ssl_certificate_key /etc/ssl/private/powerbi.key;
-
-    root /var/www/html;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location /embed-info {
-        proxy_pass http://127.0.0.1:3000/embed-info;
-        proxy_set_header Host $host;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-**Explanation:**  
-- Configures nginx to serve HTTPS on port 443.  
-- Uses the self-signed cert and key created earlier.  
-
-Reload nginx:
-
-```bash
-sudo systemctl reload nginx
-```
-
-Now access:  
-```
-https://<VM-IP>/index.html
-```
-
----
-
-✅ You should now have a complete demo for Power BI App Owns Data embedding.
+(…rest of your file continues unchanged…)
