@@ -1,4 +1,4 @@
-# Power BI App Owns Data – End-to-End Demo Setup on Ubuntu (Annotated)
+# Power BI App Owns Data – End-to-End Demo Setup on Ubuntu
 
 This document provides a **step-by-step guide** to setting up a Power BI App Owns Data embedding demo on a fresh Ubuntu VM.  
 Every command, config file, and code snippet includes detailed explanations of what it does and why it is required.
@@ -7,7 +7,7 @@ Every command, config file, and code snippet includes detailed explanations of w
 
 ## 1. Prerequisites
 
-- A fresh Ubuntu 22.04/24.04 VM.  
+- A fresh Ubuntu 22.04/24.04 Virtual Machine.  
 - Internet access to Azure endpoints (`login.microsoftonline.com`, `api.powerbi.com`, `app.powerbi.com`).  
 - A Power BI Service Principal registered in Entra ID with **API permissions**:  
   - `Tenant.Read.All`  
@@ -375,4 +375,4 @@ https://<VM-IP>/index.html
 
 ---
 
-✅ You now have a complete annotated demo for Power BI App Owns Data embedding.
+✅ You should now have a complete demo for Power BI App Owns Data embedding.
