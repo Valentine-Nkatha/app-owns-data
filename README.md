@@ -340,7 +340,7 @@ http://<VM-IP>/index.html
 
 ---
 
-## 6. Optional polish
+## 6. Optional Extra Configurations
 
 ### Keep backend alive with PM2
 
