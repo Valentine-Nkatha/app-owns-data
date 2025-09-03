@@ -1,4 +1,4 @@
-# Power BI App Owns Data – End-to-End Demo Setup on Ubuntu
+# Power BI App Owns Data – End-to-End Embed Report Demo Setup on Ubuntu
 
 This document provides a **step-by-step guide** to setting up a Power BI App Owns Data embedding demo on a fresh Ubuntu VM.  
 Every command, config file, and code snippet includes detailed explanations of what it does and why it is required.
